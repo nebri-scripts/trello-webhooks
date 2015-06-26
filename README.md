@@ -9,6 +9,11 @@ Please ensure that all files are placed in the correct places over SFTP.
   - `trello_webhook.py` should be copied to /api
   - `trello-token-save.html` should be copied to /card_html_files
 
+Over ssh, install the following requirement using pip:
+```
+pip install git+https://github.com/sarumont/py-trello
+```
+
 Once all files are properly uploaded, this app needs to be set up from debug mode.
 
 If this is the first time setting up these webhooks, a trello api key/secret pair will need to be supplied. This pair can be acquired at https://trello.com/1/appkey/generate. You must be logged in to trello to generate an app key/secret pair.
