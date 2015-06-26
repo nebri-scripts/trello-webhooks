@@ -17,7 +17,7 @@ class trello_handle_card_deleted(NebriOS):
         user = self.get_me(client)
         member_data = self.get_member_data(user['id'])
         board = client.get_board(member_data.backup_board_id)
-        backup_list = board.get_list(member_data.backup_list_id)
+        backup_list = board.get_list(member_data.deleted_list_id)
         for label in self.card_json['labels']:
             board.add_label(label['name'], label['color'])
         add_card_kwargs = {'desc': self.card_json['desc'], 'labels': self.card_json['labels']}
