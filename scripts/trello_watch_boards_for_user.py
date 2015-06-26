@@ -1,11 +1,7 @@
 import logging
 import traceback
 
-from trello import (
-    Board,
-    TrelloClient
-)
-
+from trello import TrelloClient, Board
 
 logging.basicConfig(filename='trello_webhook_module.log', level=logging.DEBUG)
 
@@ -62,29 +58,18 @@ class trello_watch_boards_for_user(NebriOS):
     def setup_backup_board_and_list(self, client, user):
         member_data = self.get_member_data(user['id'])
         board_created = self.create_backup_board(client, member_data)
-        self.create_backup_list(client, member_data, board_created)
+        member_data.deleted_list_name = "Deleted cards"
+        member_data.deleted_list_id = self.create_backup_list(client, member_data, board_created, member_data.deleted_list_name, member_data.deleted_list_id)
+        member_data.archived_list_name = "Archived cards"
+        member_data.archived_list_id = self.create_backup_list(client, member_data, board_created, member_data.archived_list_name, member_data.archived_list_id)
+        member_data.save()
         return member_data
     
-    def create_backup_list(self, client, member_data, board_created):
+    def create_backup_list(self, client, member_data, board_created, name, list_id):
         create_backup_list = False
         backup_board = client.get_board(member_data.backup_board_id)
-        if member_data.backup_list_id is None:
-            create_backup_list = True
-        else:
-            try:
-                backup_list = backup_board.get_list(member_data.backup_list_id)
-                if backup_list.board.id != backup_board.id or backup_list.closed:
-                    create_backup_list = True
-            except Exception, e:
-                create_backup_list = True
-        if create_backup_list:
-            if board_created:
-                for list in backup_board.all_lists():
-                    list.close()
-            backup_list = backup_board.add_list('Backup List')
-            member_data.backup_list_id = backup_list.id
-            member_data.backup_list_name = backup_list.name
-            member_data.save()
+        backup_list = backup_board.add_list(name)
+        return backup_list.id   
     
     def create_backup_board(self, client, member_data):
         create_backup_board = False

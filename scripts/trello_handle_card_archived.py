@@ -20,7 +20,7 @@ class trello_handle_card_archived(NebriOS):
                 '/cards',
                 http_method='POST',
                 post_args={
-                    'idList': member_data.backup_list_id,
+                    'idList': member_data.archived_list_id,
                     'urlSource': "null",
                     'idCardSource': self.card_id
                 }
